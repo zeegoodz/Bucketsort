@@ -1,0 +1,132 @@
+bucketsort: n = 20000000  m = 100000 buckets seed = 232 time = 2.408933 seconds
+bucketsort: n = 20000000  m = 75000 buckets seed = 232 time = 1.607862 seconds
+bucketsort: n = 20000000  m = 50000 buckets seed = 232 time = 1.605258 seconds
+bucketsort: n = 20000000  m = 40000 buckets seed = 232 time = 1.618412 seconds
+bucketsort: n = 20000000  m = 30000 buckets seed = 232 time = 1.644348 seconds
+bucketsort: n = 20000000  m = 20000 buckets seed = 232 time = 1.693844 seconds
+bucketsort: n = 20000000  m = 10000 buckets seed = 232 time = 1.790231 seconds
+bucketsort: n = 20000000  m = 5000 buckets seed = 232 time = 1.881697 seconds
+bucketsort: n = 20000000  m = 2500 buckets seed = 232 time = 1.968641 seconds
+bucketsort: n = 20000000  m = 1000 buckets seed = 232 time = 2.067034 seconds
+
+bucketsort: n = 20000000  m = 100000 buckets seed = 6764 time = 1.630802 seconds
+bucketsort: n = 20000000  m = 75000 buckets seed = 6764 time = 1.603423 seconds
+bucketsort: n = 20000000  m = 50000 buckets seed = 6764 time = 1.592750 seconds
+bucketsort: n = 20000000  m = 40000 buckets seed = 6764 time = 1.612058 seconds
+bucketsort: n = 20000000  m = 30000 buckets seed = 6764 time = 1.635693 seconds
+bucketsort: n = 20000000  m = 20000 buckets seed = 6764 time = 1.693065 seconds
+bucketsort: n = 20000000  m = 10000 buckets seed = 6764 time = 1.798020 seconds
+bucketsort: n = 20000000  m = 5000 buckets seed = 6764 time = 1.875585 seconds
+bucketsort: n = 20000000  m = 2500 buckets seed = 6764 time = 1.969042 seconds
+bucketsort: n = 20000000  m = 1000 buckets seed = 6764 time = 2.065746 seconds
+
+bucketsort: n = 20000000  m = 100000 buckets seed = 445455 time = 1.633768 seconds
+bucketsort: n = 20000000  m = 75000 buckets seed = 445455 time = 1.604802 seconds
+bucketsort: n = 20000000  m = 50000 buckets seed = 445455 time = 1.596594 seconds
+bucketsort: n = 20000000  m = 40000 buckets seed = 445455 time = 1.611393 seconds
+bucketsort: n = 20000000  m = 30000 buckets seed = 445455 time = 1.638676 seconds
+bucketsort: n = 20000000  m = 20000 buckets seed = 445455 time = 1.695152 seconds
+bucketsort: n = 20000000  m = 10000 buckets seed = 445455 time = 1.786006 seconds
+bucketsort: n = 20000000  m = 5000 buckets seed = 445455 time = 1.876733 seconds
+bucketsort: n = 20000000  m = 2500 buckets seed = 445455 time = 1.970057 seconds
+bucketsort: n = 20000000  m = 1000 buckets seed = 445455 time = 2.066115 seconds
+
+bucketsort: n = 20000000  m = 100000 buckets seed = 876533 time = 1.640099 seconds
+bucketsort: n = 20000000  m = 75000 buckets seed = 876533 time = 1.613210 seconds
+bucketsort: n = 20000000  m = 50000 buckets seed = 876533 time = 1.603296 seconds
+bucketsort: n = 20000000  m = 40000 buckets seed = 876533 time = 1.615665 seconds
+bucketsort: n = 20000000  m = 30000 buckets seed = 876533 time = 1.636713 seconds
+bucketsort: n = 20000000  m = 20000 buckets seed = 876533 time = 1.692362 seconds
+bucketsort: n = 20000000  m = 10000 buckets seed = 876533 time = 1.797834 seconds
+bucketsort: n = 20000000  m = 5000 buckets seed = 876533 time = 1.878372 seconds
+bucketsort: n = 20000000  m = 2500 buckets seed = 876533 time = 1.968144 seconds
+bucketsort: n = 20000000  m = 1000 buckets seed = 876533 time = 2.053660 seconds
+
+bucketsort: n = 100000000  m = 100000 buckets seed = 232 time = 10.267166 seconds
+bucketsort: n = 100000000  m = 75000 buckets seed = 232 time = 9.677995 seconds
+bucketsort: n = 100000000  m = 50000 buckets seed = 232 time = 9.517131 seconds
+bucketsort: n = 100000000  m = 40000 buckets seed = 232 time = 9.537858 seconds
+bucketsort: n = 100000000  m = 30000 buckets seed = 232 time = 9.780442 seconds
+bucketsort: n = 100000000  m = 20000 buckets seed = 232 time = 9.954549 seconds
+bucketsort: n = 100000000  m = 10000 buckets seed = 232 time = 10.447219 seconds
+bucketsort: n = 100000000  m = 5000 buckets seed = 232 time = 10.866969 seconds
+bucketsort: n = 100000000  m = 2500 buckets seed = 232 time = 11.278063 seconds
+bucketsort: n = 100000000  m = 1000 buckets seed = 232 time = 11.770907 seconds
+
+bucketsort: n = 100000000  m = 100000 buckets seed = 6764 time = 10.160485 seconds
+bucketsort: n = 100000000  m = 75000 buckets seed = 6764 time = 9.665688 seconds
+bucketsort: n = 100000000  m = 50000 buckets seed = 6764 time = 9.615470 seconds
+bucketsort: n = 100000000  m = 40000 buckets seed = 6764 time = 9.567783 seconds
+bucketsort: n = 100000000  m = 30000 buckets seed = 6764 time = 9.766814 seconds
+bucketsort: n = 100000000  m = 20000 buckets seed = 6764 time = 9.991869 seconds
+bucketsort: n = 100000000  m = 10000 buckets seed = 6764 time = 10.439718 seconds
+bucketsort: n = 100000000  m = 5000 buckets seed = 6764 time = 10.877890 seconds
+bucketsort: n = 100000000  m = 2500 buckets seed = 6764 time = 11.322789 seconds
+bucketsort: n = 100000000  m = 1000 buckets seed = 6764 time = 11.764313 seconds
+
+bucketsort: n = 100000000  m = 100000 buckets seed = 445455 time = 10.080128 seconds
+bucketsort: n = 100000000  m = 75000 buckets seed = 445455 time = 9.590688 seconds
+bucketsort: n = 100000000  m = 50000 buckets seed = 445455 time = 9.591523 seconds
+bucketsort: n = 100000000  m = 40000 buckets seed = 445455 time = 9.525275 seconds
+bucketsort: n = 100000000  m = 30000 buckets seed = 445455 time = 9.741973 seconds
+bucketsort: n = 100000000  m = 20000 buckets seed = 445455 time = 9.957698 seconds
+bucketsort: n = 100000000  m = 10000 buckets seed = 445455 time = 10.417493 seconds
+bucketsort: n = 100000000  m = 5000 buckets seed = 445455 time = 10.854059 seconds
+bucketsort: n = 100000000  m = 2500 buckets seed = 445455 time = 11.330799 seconds
+bucketsort: n = 100000000  m = 1000 buckets seed = 445455 time = 11.763024 seconds
+
+bucketsort: n = 100000000  m = 100000 buckets seed = 876533 time = 10.070918 seconds
+bucketsort: n = 100000000  m = 75000 buckets seed = 876533 time = 9.596264 seconds
+bucketsort: n = 100000000  m = 50000 buckets seed = 876533 time = 9.544448 seconds
+bucketsort: n = 100000000  m = 40000 buckets seed = 876533 time = 9.516077 seconds
+bucketsort: n = 100000000  m = 30000 buckets seed = 876533 time = 9.764046 seconds
+bucketsort: n = 100000000  m = 20000 buckets seed = 876533 time = 9.973229 seconds
+bucketsort: n = 100000000  m = 10000 buckets seed = 876533 time = 10.441128 seconds
+bucketsort: n = 100000000  m = 5000 buckets seed = 876533 time = 10.871331 seconds
+bucketsort: n = 100000000  m = 2500 buckets seed = 876533 time = 11.313830 seconds
+bucketsort: n = 100000000  m = 1000 buckets seed = 876533 time = 11.763928 seconds
+
+bucketsort: n = 200000000  m = 100000 buckets seed = 232 time = 23.157638 seconds
+bucketsort: n = 200000000  m = 75000 buckets seed = 232 time = 21.797734 seconds
+bucketsort: n = 200000000  m = 50000 buckets seed = 232 time = 21.064327 seconds
+bucketsort: n = 200000000  m = 40000 buckets seed = 232 time = 20.939266 seconds
+bucketsort: n = 200000000  m = 30000 buckets seed = 232 time = 21.176956 seconds
+bucketsort: n = 200000000  m = 20000 buckets seed = 232 time = 21.223626 seconds
+bucketsort: n = 200000000  m = 10000 buckets seed = 232 time = 22.188448 seconds
+bucketsort: n = 200000000  m = 5000 buckets seed = 232 time = 23.085587 seconds
+bucketsort: n = 200000000  m = 2500 buckets seed = 232 time = 23.782276 seconds
+bucketsort: n = 200000000  m = 1000 buckets seed = 232 time = 24.753285 seconds
+
+bucketsort: n = 200000000  m = 100000 buckets seed = 6764 time = 23.264045 seconds
+bucketsort: n = 200000000  m = 75000 buckets seed = 6764 time = 21.636437 seconds
+bucketsort: n = 200000000  m = 50000 buckets seed = 6764 time = 21.213081 seconds
+bucketsort: n = 200000000  m = 40000 buckets seed = 6764 time = 21.001557 seconds
+bucketsort: n = 200000000  m = 30000 buckets seed = 6764 time = 21.154133 seconds
+bucketsort: n = 200000000  m = 20000 buckets seed = 6764 time = 21.339294 seconds
+bucketsort: n = 200000000  m = 10000 buckets seed = 6764 time = 22.192263 seconds
+bucketsort: n = 200000000  m = 5000 buckets seed = 6764 time = 23.021289 seconds
+bucketsort: n = 200000000  m = 2500 buckets seed = 6764 time = 23.775779 seconds
+bucketsort: n = 200000000  m = 1000 buckets seed = 6764 time = 24.761308 seconds
+
+bucketsort: n = 200000000  m = 100000 buckets seed = 445455 time = 23.302913 seconds
+bucketsort: n = 200000000  m = 75000 buckets seed = 445455 time = 21.757052 seconds
+bucketsort: n = 200000000  m = 50000 buckets seed = 445455 time = 21.198329 seconds
+bucketsort: n = 200000000  m = 40000 buckets seed = 445455 time = 20.889912 seconds
+bucketsort: n = 200000000  m = 30000 buckets seed = 445455 time = 21.287713 seconds
+bucketsort: n = 200000000  m = 20000 buckets seed = 445455 time = 21.373463 seconds
+bucketsort: n = 200000000  m = 10000 buckets seed = 445455 time = 22.119239 seconds
+bucketsort: n = 200000000  m = 5000 buckets seed = 445455 time = 23.072099 seconds
+bucketsort: n = 200000000  m = 2500 buckets seed = 445455 time = 23.819894 seconds
+bucketsort: n = 200000000  m = 1000 buckets seed = 445455 time = 24.625962 seconds
+
+bucketsort: n = 200000000  m = 100000 buckets seed = 876533 time = 22.882391 seconds
+bucketsort: n = 200000000  m = 75000 buckets seed = 876533 time = 21.803409 seconds
+bucketsort: n = 200000000  m = 50000 buckets seed = 876533 time = 20.995605 seconds
+bucketsort: n = 200000000  m = 40000 buckets seed = 876533 time = 20.968041 seconds
+bucketsort: n = 200000000  m = 30000 buckets seed = 876533 time = 21.211417 seconds
+bucketsort: n = 200000000  m = 20000 buckets seed = 876533 time = 21.258957 seconds
+bucketsort: n = 200000000  m = 10000 buckets seed = 876533 time = 22.183654 seconds
+bucketsort: n = 200000000  m = 5000 buckets seed = 876533 time = 23.049472 seconds
+bucketsort: n = 200000000  m = 2500 buckets seed = 876533 time = 23.785400 seconds
+bucketsort: n = 200000000  m = 1000 buckets seed = 876533 time = 24.768166 seconds
+
