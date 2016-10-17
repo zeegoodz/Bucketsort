@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
-/* 
+#include <mpi.h>
+/*
  * Sequential bucketsort for randomly generated integers.
  *
  */
@@ -131,7 +131,7 @@ void sortEachBucket(int numBuckets)
 }
 
 
-/* 
+/*
  * Combine all buckets back into the original array to finish the sorting
  *
  */
@@ -201,7 +201,7 @@ void print_usage(char * program)
 
 int main(int argc, char **argv)
 {
-	int n;
+	int n, myid, size, elementsPerProc;
 	int numBuckets;
 	unsigned int seed;
 	double startTime;
@@ -212,28 +212,48 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
+	MPI_Init(&argc, &argv);
+	MPI_Comm_rank(MPI_COMM_WORLD, &myid);
+	MPI_Comm_size(MPI_COMM_WORLD, &size);
+
 	n = atoi(argv[1]);
 	numBuckets = atoi(argv[2]);
 	seed = atoi(argv[3]);
+	elementsPerProc = (n/size);
 
 	if ((numBuckets < 1) || (n < 1) || (n < numBuckets)) {
 		print_usage(argv[0]);
 		exit(1);
 	}
-			
-	A = (int *) malloc(sizeof(int) * n);
 
-	generateInput(A, n, seed);
- 	if (DEBUG_LEVEL >= 3) 
+	A = (int *) malloc(sizeof(int) * n);
+	int subA = (int *) malloc(sizeof(int) * (n/size));
+
+	if (myid == 0){
+		generateInput(A, n, seed);
+ 	if (DEBUG_LEVEL >= 3)
 		printArray(A,n);
+	}
 
 	startTime = getMilliSeconds();
-	sequentialBucketsort(A, n, numBuckets);
+
+
+	MPI_Scatter(A, elementsPerProc, MPI_INT, subA, elementsPerProc, MPI_INT, 0, MPI_COMM_WORLD);
+	sequentialBucketsort(subA, elementsPerProc, numBuckets);
+
+	int *sortedA = (int *) malloc(sizeof(int)*size);
+
+	MPI_Allgather(&subA, 1, MPI_INT, sortedA, 1, MPI_INT, MPI_COMM_WORLD);
+	sequentialBucketsort(sortedA, n, numBuckets);
+
+
 	totalTime = getMilliSeconds() - startTime;
+
 	checkIfSorted(A, n);
+
 	if (DEBUG_LEVEL >= 1)
 		printf("Number of array grows is %d\n", count_array_grows);
- 	if (DEBUG_LEVEL >= 3) 
+ 	if (DEBUG_LEVEL >= 3)
  		printArray(A,n);
 	printf("bucketsort: n = %d  m = %d buckets seed = %d time = %lf seconds\n",
 		   n, numBuckets, seed,	totalTime/1000.0);
