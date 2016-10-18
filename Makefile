@@ -6,7 +6,7 @@ CC=mpicc
 CFLAGS=-Wall -O -DDEBUG=$(DEBUG)
 
 #linker flags for libraries
-LDFLAGS=
+LDFLAGS=-lprand
 PROGS=parallel-bucketsort
 
 
