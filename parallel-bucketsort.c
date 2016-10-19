@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <mpi.h>
 #include <prand.h>
-/*
+#include <mpi.h>
+
+/* 
  * Sequential bucketsort for randomly generated integers.
  *
  */
+void parallelBucketsort(int *, int, int, int, int);
 
 const int DEBUG_LEVEL = DEBUG;
 int count_array_grows = 0;
@@ -19,13 +21,16 @@ const int TRUE = 1;
 const int FALSE = 0;
 
 int *A;
-int **bucket; // bucket[i] = array holding the ith bucket
-int *capacity; // capacity[i] = capacity of ith bucket
-int *size; // size[i] = next free location in ith bucket
+int *recvBuff;
+int **parBucket; // bucket[i] = array holding the ith bucket
+int *parCapacity; // capacity[i] = capacity of ith bucket
+int *parSize; // size[i] = next free location in ith bucket
+int **bucket;
+int *capacity;
+int *size;
 
 
-void checkIfSorted(int *array, int n)
-{
+void checkIfSorted(int *array, int n) {
 	int i;
 	int sorted;
 
@@ -49,14 +54,14 @@ void checkIfSorted(int *array, int n)
 /*
  * Generate n numbers using the given seed
  */
-void generateInput(int *A, int n, long int seed, int myid, long long int offset)
-{
+void generateInput(int *A, int n, long int seed, int myId, long long int offset) {
 	int i;
-	long long int startingPosition = 0;
+    long long int startingPosition = 0;    
 
 	srandom(seed);
-	startingPosition = myid * offset;
-	unrankRand(startingPosition);
+    startingPosition = myId * offset;
+    unrankRand(startingPosition);
+
 	for (i=0; i<n; i++) {
 		A[i] = random();
 	}
@@ -66,8 +71,7 @@ void generateInput(int *A, int n, long int seed, int myid, long long int offset)
 /*
  * Print the array, one element per line
  */
-void printArray(int *A, int n)
-{
+void printArray(int *A, int n) {
 	int i;
 
 	for (i=0; i<n; i++)
@@ -80,22 +84,20 @@ void printArray(int *A, int n)
  * Insert a given value into the specified bucket
  */
 
-void insertInBucket(int value, int bucketIndex)
-{
+void insertInBucket(int value, int bucketIndex) {
 	int *tmp;
 
-	if (size[bucketIndex] == capacity[bucketIndex])
-	{
+	if (size[bucketIndex] == capacity[bucketIndex]) {
 		//grow the bucket array
 		tmp = (int *) malloc(sizeof(int)*(2*capacity[bucketIndex]));
 		memcpy(tmp, bucket[bucketIndex], capacity[bucketIndex]*sizeof(int));
-//		free(bucket[bucketIndex]);
+		free(bucket[bucketIndex]);
 		bucket[bucketIndex] = tmp;
 		capacity[bucketIndex] = 2 * capacity[bucketIndex];
 		count_array_grows++;
 		if (DEBUG_LEVEL >= 1) {
-		//	fprintf(stderr, "Growing bucket %d from %d to %d elements\n",
-		//			bucketIndex, capacity[bucketIndex]/2, capacity[bucketIndex]);
+			fprintf(stderr, "Growing bucket %d from %d to %d elements\n",
+					bucketIndex, capacity[bucketIndex]/2, capacity[bucketIndex]);
 		}
 	}
 
@@ -103,13 +105,31 @@ void insertInBucket(int value, int bucketIndex)
 	size[bucketIndex]++;
 }
 
+void parInsertInBucket(int value, int bucketIndex) {
+	int *tmp;
 
+	if (parSize[bucketIndex] == parCapacity[bucketIndex]) {
+		//grow the bucket array
+		tmp = (int *) malloc(sizeof(int)*(2*parCapacity[bucketIndex]));
+		memcpy(tmp, parBucket[bucketIndex], parCapacity[bucketIndex]*sizeof(int));
+		free(parBucket[bucketIndex]);
+		parBucket[bucketIndex] = tmp;
+		parCapacity[bucketIndex] = 2 * parCapacity[bucketIndex];
+		count_array_grows++;
+		if (DEBUG_LEVEL >= 1) {
+			fprintf(stderr, "Growing bucket %d from %d to %d elements\n",
+					bucketIndex, parCapacity[bucketIndex]/2, parCapacity[bucketIndex]);
+		}
+	}
+
+	parBucket[bucketIndex][parSize[bucketIndex]] = value;
+	parSize[bucketIndex]++;
+}
 /*
  * compareTo function for using qsort
  * returns  -ve if *x < *y, 0 if *x == *y, +ve if *x > *y
  */
-int compareTo(const void *x, const void *y)
-{
+int compareTo(const void *x, const void *y) {
 		return ((*(int *)x) - (*(int *)y));
 }
 
@@ -118,36 +138,44 @@ int compareTo(const void *x, const void *y)
  * Sort indiviual bucket using quick sort from std C library
  */
 
-void sortEachBucket(int numBuckets)
-{
+void sortEachBucket(int numBuckets) {
 	int i;
 
-	for (i=0; i<numBuckets; i++)
-	{
+	for (i=0; i<numBuckets; i++) {
 		qsort(bucket[i], size[i], sizeof(int), compareTo);
 	}
 	if (DEBUG_LEVEL >= 2)
 		for (i=0; i<numBuckets; i++) {
-		//	fprintf(stderr, "bucket %d has %d elements\n", i, size[i]);
+			fprintf(stderr, "bucket %d has %d elements\n", i, size[i]);
 		}
 }
 
-
-/*
+/* 
  * Combine all buckets back into the original array to finish the sorting
  *
  */
-void combineBuckets(int *A, int n, int numBuckets)
-{
+void combineBuckets(int *A, int n, int numBuckets) {
 	int i;
 
 	int start = 0;
 	for (i=0; i<numBuckets; i++) {
 		memcpy(A+start, bucket[i], sizeof(int)*size[i]);
 		start = start + size[i];
-//		free(bucket[i]);
+		free(bucket[i]);
 	}
-//	free(bucket);
+	free(bucket);
+}
+
+void parCombineBuckets(int *A, int n, int numBuckets) {
+	int i;
+
+	int start = 0;
+	for (i=0; i<numBuckets; i++) {
+		memcpy(A+start, parBucket[i], sizeof(int)*parSize[i]);
+		start = start + parSize[i];
+		free(parBucket[i]);
+	}
+	free(parBucket);
 }
 
 /*
@@ -158,8 +186,7 @@ void combineBuckets(int *A, int n, int numBuckets)
  *
  */
 
-void sequentialBucketsort(int *A, int n, int numBuckets)
-{
+void sequentialBucketsort(int *recvBuff, int n, int numBuckets) {
 	int share;
 	int i;
 	int bucketRange;
@@ -179,102 +206,138 @@ void sequentialBucketsort(int *A, int n, int numBuckets)
 	}
 
 	bucketRange = RAND_MAX/numBuckets;
-	for (i=0; i<n; i++)
-	{
-		bucketIndex = A[i]/bucketRange;
+	for (i=0; i<n; i++) {
+		bucketIndex = recvBuff[i]/bucketRange;
 		if (bucketIndex > numBuckets - 1)
 				bucketIndex = numBuckets - 1;
-		insertInBucket(A[i], bucketIndex);
+		insertInBucket(recvBuff[i], bucketIndex);
 	}
 
 	sortEachBucket(numBuckets);
-	combineBuckets(A, n, numBuckets);
-//	free(capacity);
-//	free(size);
+	combineBuckets(recvBuff, n, numBuckets);
+	free(capacity);
+	free(size);
+}
+
+void parallelBucketsort(int *A, int myN, int numBuckets, int numProcs, int myId) {
+	int share;
+	int i;
+	int bucketRange;
+	int bucketIndex;
+    int sdispls[numProcs];
+    int rdispls[numProcs];
+    int allRecvBuff[numProcs];
+
+	share = myN / numBuckets;
+	share = share + (share * 11)/100; // 11% extra for overflow
+
+	parCapacity = (int *) malloc(sizeof(int)*numBuckets);
+	parSize = (int *) malloc(sizeof(int)*numBuckets);
+	parBucket = (int **) malloc(sizeof(int *)* numBuckets);
+
+	for (i=0; i<numBuckets; i++) {
+		parBucket[i] = (int *) malloc(sizeof(int)*share);
+		parCapacity[i] = share;
+		parSize[i] = 0;
+	}
+
+	bucketRange = RAND_MAX/numBuckets;
+	for (i=0; i<myN; i++) {
+		bucketIndex = A[i]/bucketRange;
+
+		if (bucketIndex > numBuckets - 1) {
+				bucketIndex = numBuckets - 1;
+        }
+		parInsertInBucket(A[i], bucketIndex);
+	}
+
+	parCombineBuckets(A, myN, numBuckets);
+
+    sdispls[0] = 0;
+
+    for (i=0;i<(numProcs-1);i++) {
+        sdispls[i+1] = sdispls[i] + parSize[i]; 
+    }
+
+    MPI_Alltoall(parSize, 1, MPI_INT, allRecvBuff, 1, MPI_INT, MPI_COMM_WORLD);
+
+    for (i=0;i<(numProcs-1);i++) {
+        rdispls[i+1] = rdispls[i] + allRecvBuff[i]; 
+    }
+    
+    MPI_Alltoallv(A, parSize, sdispls, MPI_INT, recvBuff, allRecvBuff, rdispls, MPI_INT,
+                  MPI_COMM_WORLD);
+
+	free(parCapacity);
+	free(parSize);
+}
+
+void print_usage(char * program) {
+	fprintf(stderr, "Usage %s <n, must be > 1> <#buckets, must between 1 and n> <random seed>\n",
+           program);
 }
 
 
-void print_usage(char * program)
-{
-		fprintf(stderr, "Usage %s <n, must be > 1> <#buckets, must between 1 and n> <random seed>\n", program);
-}
 
-
-
-int main(int argc, char **argv)
-{
-	int n, myid, size, elementsPerProc;
+int main(int argc, char **argv) {
+	int n, myId, numProcs, myN;
 	int numBuckets;
+    int myNumBuckets;
+    long long int offset;
 	unsigned int seed;
 	double startTime;
 	double totalTime;
-	long long int offset;
 
 	if (argc != 4) {
 		print_usage(argv[0]);
 		exit(1);
 	}
-
-	MPI_Init(&argc, &argv);
-	MPI_Comm_rank(MPI_COMM_WORLD, &myid);
-	MPI_Comm_size(MPI_COMM_WORLD, &size);
-
-	n = atoi(argv[1]);
+       
 	numBuckets = atoi(argv[2]);
 	seed = atoi(argv[3]);
-	elementsPerProc = (n/size);
-	offset = n;
+	n = atoi(argv[1]);
 
 	if ((numBuckets < 1) || (n < 1) || (n < numBuckets)) {
 		print_usage(argv[0]);
 		exit(1);
 	}
-	if(myid == 0){
-		A = (int *) malloc(sizeof(int) * n);
-		if (DEBUG_LEVEL >= 3)
-			printArray(A,n);
-	}
+ 
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &myId);
+    MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
 
-	startTime = getMilliSeconds();
+    myN = n / numProcs;
+    offset = (long long int)n;
+    myNumBuckets = numProcs; 
 
-	int *subA = (int *) malloc(sizeof(int) * (n/size));
+    if (myId == numProcs - 1) {
+        myN += (n % numProcs);
+    }		
 
-	MPI_Scatter(A, elementsPerProc, MPI_INT, subA, elementsPerProc, MPI_INT, 0, MPI_COMM_WORLD);
+	A = (int *) malloc(sizeof(int) * myN);
+    recvBuff = (int *) malloc(sizeof(int) * myN);
 
-	generateInput(subA, elementsPerProc, seed, myid, offset);
-	sequentialBucketsort(subA, elementsPerProc, numBuckets);
+	generateInput(A, n, seed, myId, offset);
 
-	//int *sortedA = (int *) malloc(sizeof(int)*size);
-	int *sortedAs = NULL;
-	if (myid == 0){
-		sortedAs = (int *)malloc(sizeof(int)*size);
-	}
+ 	if (DEBUG_LEVEL >= 3) 
+		printArray(A, myN);
 
-	MPI_Gather(&subA, 1, MPI_INT, sortedAs, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	startTime = MPI_Wtime();
+	parallelBucketsort(A, myN, myNumBuckets, numProcs, myId);
+    sequentialBucketsort(recvBuff, myN, myNumBuckets);
+	totalTime = MPI_Wtime() - startTime;
+	checkIfSorted(A, n);
 
-	totalTime = getMilliSeconds() - startTime;
-	if (myid == 0){
-	sequentialBucketsort(sortedAs, n, numBuckets);
-
-	//	printf("SortedA = ");
-//	for(int i = 0; i < n; i++){
-//		printf("%d ",sortedAs[i]);
-//	}
-//	printf("\n");
-//	printf("A = ");
-//	for(int i = 0; i < n; i++){
-//		printf("%d ",A[i]);
-//	}
-	printArray(sortedAs, n);
-	checkIfSorted(sortedAs, n);
 	if (DEBUG_LEVEL >= 1)
 		printf("Number of array grows is %d\n", count_array_grows);
- 	if (DEBUG_LEVEL >= 3)
+ 	if (DEBUG_LEVEL >= 3) 
  		printArray(A,n);
+
 	printf("bucketsort: n = %d  m = %d buckets seed = %d time = %lf seconds\n",
 		   n, numBuckets, seed,	totalTime/1000.0);
-	}
-//	free(A);
+
+	free(A);
+    free(recvBuff);
 	exit(0);
 }
 
