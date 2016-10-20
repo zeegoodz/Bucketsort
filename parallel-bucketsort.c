@@ -1,3 +1,4 @@
+// Afton and Zach
 
 #include <stdlib.h>
 #include <string.h>
@@ -54,7 +55,7 @@ void checkIfSorted(int *array, int n) {
 /*
  * Generate n numbers using the given seed
  */
-void generateInput(int *A, int n, long int seed, int myId, long long int offset) {
+void generateInput(int *A, int fillN, long int seed, int myId, long long int offset) {
 	int i;
     long long int startingPosition = 0;    
 
@@ -62,7 +63,7 @@ void generateInput(int *A, int n, long int seed, int myId, long long int offset)
     startingPosition = myId * offset;
     unrankRand(startingPosition);
 
-	for (i=0; i<n; i++) {
+	for (i=0; i<fillN; i++) {
 		A[i] = random();
 	}
 }
@@ -224,13 +225,16 @@ void parallelBucketsort(int *A, int myN, int numBuckets, int numProcs, int myId)
 	int i;
 	int bucketRange;
 	int bucketIndex;
-    int sdispls[numProcs];
-    int rdispls[numProcs];
-    int allRecvBuff[numProcs];
+    int *sdispls;
+    int *rdispls;
+    int *allRecvBuff;
 
 	share = myN / numBuckets;
 	share = share + (share * 11)/100; // 11% extra for overflow
 
+    sdispls = (int *) malloc(sizeof(int)*numBuckets);
+    rdispls = (int *) malloc(sizeof(int)*numBuckets);
+    allRecvBuff = (int *) malloc(sizeof(int)*numBuckets);
 	parCapacity = (int *) malloc(sizeof(int)*numBuckets);
 	parSize = (int *) malloc(sizeof(int)*numBuckets);
 	parBucket = (int **) malloc(sizeof(int *)* numBuckets);
@@ -268,6 +272,9 @@ void parallelBucketsort(int *A, int myN, int numBuckets, int numProcs, int myId)
     MPI_Alltoallv(A, parSize, sdispls, MPI_INT, recvBuff, allRecvBuff, rdispls, MPI_INT,
                   MPI_COMM_WORLD);
 
+    free(sdispls);
+    free(rdispls);
+    free(allRecvBuff);
 	free(parCapacity);
 	free(parSize);
 }
@@ -283,6 +290,7 @@ int main(int argc, char **argv) {
 	int n, myId, numProcs, myN;
 	int numBuckets;
     int myNumBuckets;
+    int fillN;
     long long int offset;
 	unsigned int seed;
 	double startTime;
@@ -306,18 +314,22 @@ int main(int argc, char **argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &myId);
     MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
 
+
     myN = n / numProcs;
-    offset = (long long int)n;
+    myN += (n % numProcs);
+    fillN = n / numProcs;
+    offset = (long long int)fillN;
     myNumBuckets = numProcs; 
 
-    if (myId == numProcs - 1) {
-        myN += (n % numProcs);
-    }		
 
 	A = (int *) malloc(sizeof(int) * myN);
     recvBuff = (int *) malloc(sizeof(int) * myN);
-
-	generateInput(A, n, seed, myId, offset);
+    
+    if (myId == numProcs - 1) {
+	    generateInput(A, myN, seed, myId, offset);
+    } else {
+        generateInput(A, fillN,seed, myId, offset);
+    }
 
  	if (DEBUG_LEVEL >= 3) 
 		printArray(A, myN);
