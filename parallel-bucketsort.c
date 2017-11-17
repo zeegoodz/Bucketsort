@@ -1,5 +1,3 @@
-// Afton and Zach
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -137,7 +135,7 @@ void parInsertInBucket(int value, int bucketIndex) {
  * returns  -ve if *x < *y, 0 if *x == *y, +ve if *x > *y
  */
 int compareTo(const void *x, const void *y) {
-		return ((*(int *)x) - (*(int *)y));
+	return ((*(int *)x) - (*(int *)y));
 }
 
 
@@ -232,15 +230,15 @@ void parallelBucketsort(int *A, int myN, int numBuckets, int numProcs, int myId)
 	int i;
 	int bucketRange;
 	int bucketIndex;
-    int *sdispls;
-    int *rdispls;
+    	int *sdispls;
+    	int *rdispls;
 
 	share = myN / numBuckets;
 	share = share + (share * 11)/100; // 11% extra for overflow
 
-    sdispls = (int *) malloc(sizeof(int)*numBuckets);
-    rdispls = (int *) malloc(sizeof(int)*numBuckets);
-    allRecvBuff = (int *) malloc(sizeof(int)*numBuckets);
+    	sdispls = (int *) malloc(sizeof(int)*numBuckets);
+   	rdispls = (int *) malloc(sizeof(int)*numBuckets);
+    	allRecvBuff = (int *) malloc(sizeof(int)*numBuckets);
 	parCapacity = (int *) malloc(sizeof(int)*numBuckets);
 	parSize = (int *) malloc(sizeof(int)*numBuckets);
 	parBucket = (int **) malloc(sizeof(int *)* numBuckets);
@@ -262,7 +260,7 @@ void parallelBucketsort(int *A, int myN, int numBuckets, int numProcs, int myId)
 	}
 
 	parCombineBuckets(A, myN, numBuckets);
-    sdispls[0] = 0;
+    	sdispls[0] = 0;
 
     for (i=0;i<numBuckets;i++) {
         sdispls[i+1] = sdispls[i] + parSize[i];
@@ -323,9 +321,9 @@ void checkIfSortedParallel(int myId, int numProcs, int count, int *recvBuff){
 int main(int argc, char **argv) {
 	int n, numProcs, myN;
 	int numBuckets;
-    int myNumBuckets;
-    int fillN;
-    long long int offset;
+   	int myNumBuckets;
+  	int fillN;
+    	long long int offset;
 	unsigned int seed;
 	double startTime=0;
 	double totalTime=0;
@@ -344,32 +342,32 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
-    MPI_Init(&argc, &argv);
-    MPI_Comm_rank(MPI_COMM_WORLD, &myId);
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
+	MPI_Init(&argc, &argv);
+	MPI_Comm_rank(MPI_COMM_WORLD, &myId);
+	MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
 
 
-    myN = n / numProcs;
-   if(myId == numProcs-1){
+	myN = n / numProcs;
+	if(myId == numProcs-1){
 		myN = myN + (n % numProcs);
-   }
-    fillN = n / numProcs;
-    offset = (long long int)fillN;
-    myNumBuckets = numProcs;
+	}
+	fillN = n / numProcs;
+	offset = (long long int)fillN;
+	myNumBuckets = numProcs;
 
 
 	newA = (int *) malloc(numProcs*sizeof(int) * n);
 	A = (int *) malloc(sizeof(int) * myN);
-    recvBuff = (int *) malloc(sizeof(int) * myN);
+  	recvBuff = (int *) malloc(sizeof(int) * myN);
 
 	if(myId==0){
 	startTime = MPI_Wtime();
 	}
-    if (myId == numProcs - 1) {
+	if (myId == numProcs - 1) {
 	    generateInput(A, myN, seed, myId, offset);
-    } else {
-        generateInput(A, fillN,seed, myId, offset);
-    }
+	} else {
+	generateInput(A, fillN,seed, myId, offset);
+	}
 
  	if (DEBUG_LEVEL >= 3)
 		printArray(A, myN);
@@ -399,8 +397,8 @@ int main(int argc, char **argv) {
 	}
 //	free(A);
  //   free(recvBuff);
-    MPI_Finalize();
+   	MPI_Finalize();
 	exit(0);
-}
+}	
 
 /* vim: set ts=4: */
